@@ -29,12 +29,16 @@ function isValidFile(file) {
     return ['.png', '.jpg'].indexOf(path.extname(file)) > -1;
 }
 
-function walkDir(dir, apiKey) {
+function walkDir(dir, apiKey, callback) {
     var api = new TinyPng({
         key: apiKey
     });
 
     var finder = findit(dir);
+
+    var totalSaving = 0;
+    var validFileCount = 0;
+    var compressedFileCount = 0;
 
     if(! dir) {
         throw 'No directory set';
@@ -48,6 +52,7 @@ function walkDir(dir, apiKey) {
         if (file && isValidFile(file)) {
             api.compress(file, function(err, data) {
                 if (err) {
+                    validFileCount --;
                     return console.error(err);
                 }
 
@@ -58,7 +63,19 @@ function walkDir(dir, apiKey) {
                     Math.round((1 - data.output.ratio) * 100),
                     chalk.green(Math.round(data.output.size / 1000) + 'kb')
                 );
+
+                compressedFileCount ++;
+                totalSaving += data.input.size - data.output.size;
+
+                if (callback && validFileCount === compressedFileCount) {
+                    callback({
+                        saving: totalSaving / 1000
+                    });
+                }
+
             });
+
+            validFileCount ++;
         }
     });
 
