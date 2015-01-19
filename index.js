@@ -2,10 +2,11 @@ var fs = require('fs');
 var findit = require('findit');
 var path = require('path');
 var chalk = require('chalk');
+var argv = require('minimist')(process.argv.slice(2));
 
 var TinyPng = require('./lib/tiny-png');
 
-var args = getArgs()
+var args = getArgs();
 
 // Run from command line
 if (args) {
@@ -13,16 +14,14 @@ if (args) {
 }
 
 function getArgs() {
-    var dir = process.argv[2];
-    var apiKey = process.argv[3];
 
-    if (! dir) {
+    if (! argv.d) {
         return false;
     }
 
     return {
-        dir: dir,
-        key: apiKey
+        dir: argv.d,
+        key: argv.k
     }
 }
 

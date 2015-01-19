@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^0.5.1",
-    "findit": "^2.0.0"
+    "findit": "^2.0.0",
+    "minimist": "^1.1.0"
   }
 }
