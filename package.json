@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
+  "bin": "bin/cmd.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "iamstuartwilson",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^0.5.1",
     "findit": "^2.0.0",

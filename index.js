@@ -15,30 +15,9 @@
 var fs = require('fs');
 var findit = require('findit');
 var path = require('path');
-var argv = require('minimist')(process.argv);
 var events = require('events');
 
 var TinyPng = require('./lib/tiny-png');
-
-var args = getArgs();
-
-// Run from command line
-if (args) {
-    walkDir(args.dir, args.key);
-}
-
-// Pulls out arguments
-function getArgs() {
-
-    if (! argv.d) {
-        return false;
-    }
-
-    return {
-        dir: argv.d,
-        key: argv.k
-    }
-}
 
 // Checks that the file is a .png or .jpg
 function isValidFile(file) {
@@ -72,9 +51,7 @@ function walkDir(dir, apiKey) {
     var finder = findit(dir);
 
     // Basic file compression count
-    var totalSaving = 0;
-    var validFileCount = 0;
-    var compressedFileCount = 0;
+    var totalSaving = validFileCount = compressedFileCount = foundFileCount = 0;
 
     // Check for parameters
     if(! dir) {
@@ -88,6 +65,8 @@ function walkDir(dir, apiKey) {
     // Walk direcory and trigger event on find
     finder.on('file', function(file, stat) {
         if (file && isValidFile(file)) {
+            foundFileCount ++;
+
             api.compress(file, function(err, data) {
 
                 if (err) {
@@ -136,6 +115,12 @@ function walkDir(dir, apiKey) {
 
             validFileCount ++;
         }
+    });
+
+    finder.on('end', function() {
+        event.emit('found', {
+            fileCount: foundFileCount
+        });
     });
 
     return event;
