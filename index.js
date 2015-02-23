@@ -17,7 +17,7 @@ var findit = require('findit');
 var path = require('path');
 var events = require('events');
 
-var TinyPng = require('./lib/tiny-png');
+var tinyPng = require('./lib/tiny-png');
 
 // Checks that the file is a .png or .jpg
 function isValidFile(file) {
@@ -28,7 +28,7 @@ function isValidFile(file) {
 function walkDir(dir, apiKey) {
 
     // Setup api client
-    var api = new TinyPng({
+    var api = new tinyPng({
         key: apiKey
     });
 
@@ -52,6 +52,8 @@ function walkDir(dir, apiKey) {
 
     // Basic file compression count
     var totalSaving = validFileCount = compressedFileCount = foundFileCount = 0;
+
+    var FILE_COUNT_LIMIT = 20;
 
     // Check for parameters
     if(! dir) {
@@ -94,7 +96,8 @@ function walkDir(dir, apiKey) {
                 compressedFileCount ++;
                 totalSaving += data.input.size - data.output.size;
 
-                if (validFileCount === compressedFileCount) {
+                if (validFileCount === compressedFileCount
+                    || compressedFileCount === FILE_COUNT_LIMIT) {
                     time.end = new Date();
 
                     event.emit('done', {
